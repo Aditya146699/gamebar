@@ -124,7 +124,7 @@ const ConnectFour = () => {
         </p>
       ) : (
         <p style={{ fontSize: '24px', fontWeight: 'bold' }}>
-          Player {currentPlayer}'s turn
+          Player {currentPlayer}&apos;s turn
         </p>
       )}
       <button
@@ -136,7 +136,7 @@ const ConnectFour = () => {
           backgroundColor: '#333',
           color: '#fff',
           border: 'none',
-          borderRadius: '5px',
+          borderRadius: '5px',  
           cursor: 'pointer',
         }}
       >
