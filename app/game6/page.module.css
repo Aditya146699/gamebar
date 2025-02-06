@@ -13,10 +13,6 @@
     align-content: center;
   }
   
-  .title {
-    margin-top: 3%;
-  }
-  
   .row {
     display: flex;
   }
@@ -124,7 +120,7 @@
     padding-bottom: 2%;
     top: 17%;
     left: 29%;
-    width: 42%;
+    width: 60%;
     height: 65%;
     background-color: rgb(165 151 151 / 70%);
     display: flex;
@@ -210,8 +206,8 @@ opacity: 50%;
     }
   
     .cell {
-      width: 80px;
-      height: 80px;
+      width: 70px;
+      height: 70px;
     }
     .mobileControls{
       display: flex;
