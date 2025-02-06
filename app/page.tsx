@@ -37,6 +37,12 @@ Connect 4
 </div>
 </Link>
 
+<Link href="/game6">
+<div className="flex flex-col items-center p-2">
+<img src="game6.png" alt="" className="w-60 h-60"/>
+2048 
+</div>
+</Link>
 
    </div>
   );
