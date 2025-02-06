@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 
-const Game6 = () => {
+const Home = () => {
   const initialBoard: number[][] = Array.from({ length: 4 }, () => Array(4).fill(0));
 
   const [keyCode, setKeyCode] = useState<number>(0);
@@ -207,12 +207,12 @@ const Game6 = () => {
 
   let startX: number = 0;
   let startY: number = 0;
-  const handleTouchStart = (event: TouchEvent): void => {
+  const handleTouchStart = (event: React.TouchEvent): void => {
     startX = event.touches[0].clientX;
     startY = event.touches[0].clientY;
   };
 
-  const handleTouchMove = (event: TouchEvent): void => {
+  const handleTouchMove = (event: React.TouchEvent): void => {
     event.preventDefault();
     const deltaX = event.touches[0].clientX - startX;
     const deltaY = event.touches[0].clientY - startY;
@@ -317,4 +317,4 @@ const Game6 = () => {
   );
 };
 
-export default Game6;
+export default Home;
