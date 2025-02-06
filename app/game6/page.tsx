@@ -2,16 +2,16 @@
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 
-const Home = () => {
-  const initialBoard = Array.from({ length: 4 }, () => Array(4).fill(0));
+const Game6 = () => {
+  const initialBoard: number[][] = Array.from({ length: 4 }, () => Array(4).fill(0));
 
-  const [keyCode, setKeyCode] = useState(0);
-  const [direction, setDirection] = useState("");
-  const [board, setBoard] = useState(initialBoard);
-  const [score, setScore] = useState(0); // Add score state
+  const [keyCode, setKeyCode] = useState<number>(0);
+  const [direction, setDirection] = useState<string>("");
+  const [board, setBoard] = useState<number[][]>(initialBoard);
 
+  // Initialize the board after the component has mounted
   useEffect(() => {
-    const fillInitialRandomCell = (initialBoard: number[][]) => {
+    const fillInitialRandomCell = (initialBoard: number[][]): number[][] => {
       const rowIndex = Math.floor(Math.random() * 4);
       const columnIndex = Math.floor(Math.random() * 4);
       if (initialBoard[rowIndex][columnIndex] === 0) {
@@ -23,50 +23,59 @@ const Home = () => {
     setBoard(fillInitialRandomCell([...initialBoard]));
   }, []);
 
-  const handleKeyPress = (event: any) => {
+  const handleKeyPress = (event: KeyboardEvent): void => {
     setKeyCode(event.keyCode);
   };
 
-  const generateRandomSquareNumber = () => {
+  const generateRandomSquareNumber = (): number => {
     const squareNumbers = [2, 4];
     const randomIndex = Math.floor(Math.random() * squareNumbers.length);
     return squareNumbers[randomIndex];
   };
 
-  const isGameOver = () => {
+  const isGameOver = (): boolean => {
+    // Check for valid moves (no more valid moves)
     for (let rowIndex = 0; rowIndex < 4; rowIndex++) {
       for (let columnIndex = 0; columnIndex < 4; columnIndex++) {
         const currentCell = board[rowIndex][columnIndex];
+
+        // Check if adjacent cells can merge
         if (
           (rowIndex > 0 && currentCell === board[rowIndex - 1][columnIndex]) ||
           (rowIndex < 3 && currentCell === board[rowIndex + 1][columnIndex]) ||
-          (columnIndex > 0 && currentCell === board[rowIndex][columnIndex - 1]) ||
+          (columnIndex > 0 &&
+            currentCell === board[rowIndex][columnIndex - 1]) ||
           (columnIndex < 3 && currentCell === board[rowIndex][columnIndex + 1])
         ) {
-          return false; 
+          return false; // There's a valid move, game is not over
         }
       }
     }
+
+    // Check if 2048 tile is present
     for (let rowIndex = 0; rowIndex < 4; rowIndex++) {
       for (let columnIndex = 0; columnIndex < 4; columnIndex++) {
         if (board[rowIndex][columnIndex] === 2048) {
-          return true; 
+          return true; // Player has won
         }
       }
     }
+
+    // Check if there are empty tiles left
     for (let rowIndex = 0; rowIndex < 4; rowIndex++) {
       for (let columnIndex = 0; columnIndex < 4; columnIndex++) {
         if (board[rowIndex][columnIndex] === 0) {
-          return false; 
+          return false; // There are empty tiles, game is not over
         }
       }
     }
-    return true; 
+
+    return true; // No valid moves and no empty tiles, game is over
   };
 
-  const placeRandomSquareInBoard = (updatedBoard: any) => {
+  const placeRandomSquareInBoard = (updatedBoard: number[][]): void => {
     const randomSquare = generateRandomSquareNumber();
-    const emptyCells = [];
+    const emptyCells: { row: number, col: number }[] = [];
     for (let row = 0; row < updatedBoard.length; row++) {
       for (let col = 0; col < updatedBoard[row].length; col++) {
         if (updatedBoard[row][col] === 0) {
@@ -83,7 +92,7 @@ const Home = () => {
     setBoard(updatedBoard);
   };
 
-  const mergeUpperColumn = (board: any, columnIndex: number, direction: string) => {
+  const mergeUpperColumn = (board: number[][], columnIndex: number, direction: string): number[][] => {
     const newBoard = [...board];
     const column = newBoard.map((row) => row[columnIndex]);
     const rowOrColumn = direction === "upper" ? column : newBoard[columnIndex];
@@ -91,12 +100,16 @@ const Home = () => {
     for (let rowIndex = 1; rowIndex < rowOrColumn.length; rowIndex++) {
       if (rowOrColumn[rowIndex] !== 0) {
         let mergeIndex = rowIndex - 1;
+
         while (mergeIndex >= 0 && rowOrColumn[mergeIndex] === 0) {
           mergeIndex--;
         }
-        if (mergeIndex >= 0 && rowOrColumn[mergeIndex] === rowOrColumn[rowIndex]) {
+
+        if (
+          mergeIndex >= 0 &&
+          rowOrColumn[mergeIndex] === rowOrColumn[rowIndex]
+        ) {
           rowOrColumn[mergeIndex] *= 2;
-          setScore((prevScore) => prevScore + rowOrColumn[mergeIndex]); // Update score
           rowOrColumn[rowIndex] = 0;
         } else {
           if (mergeIndex !== rowIndex - 1) {
@@ -116,20 +129,27 @@ const Home = () => {
     return newBoard;
   };
 
-  const mergeLowerColumn = (board: any, columnIndex: number, direction: string) => {
+  const mergeLowerColumn = (board: number[][], columnIndex: number, direction: string): number[][] => {
     const newBoard = [...board];
     const column = newBoard.map((row) => row[columnIndex]);
-    const rowOrColumn = direction === "lower" ? column : newBoard[columnIndex];
 
+    const rowOrColumn = direction === "lower" ? column : newBoard[columnIndex];
     for (let rowIndex = rowOrColumn.length - 2; rowIndex >= 0; rowIndex--) {
       if (rowOrColumn[rowIndex] !== 0) {
         let mergeIndex = rowIndex + 1;
-        while (mergeIndex < rowOrColumn.length && rowOrColumn[mergeIndex] === 0) {
+
+        while (
+          mergeIndex < rowOrColumn.length &&
+          rowOrColumn[mergeIndex] === 0
+        ) {
           mergeIndex++;
         }
-        if (mergeIndex < rowOrColumn.length && rowOrColumn[mergeIndex] === rowOrColumn[rowIndex]) {
+
+        if (
+          mergeIndex < rowOrColumn.length &&
+          rowOrColumn[mergeIndex] === rowOrColumn[rowIndex]
+        ) {
           rowOrColumn[mergeIndex] *= 2;
-          setScore((prevScore) => prevScore + rowOrColumn[mergeIndex]); // Update score
           rowOrColumn[rowIndex] = 0;
         } else {
           if (mergeIndex !== rowIndex + 1) {
@@ -149,7 +169,7 @@ const Home = () => {
     return newBoard;
   };
 
-  const handleMove = () => {
+  const handleMove = (): void => {
     if (keyCode === 38 || direction === "upper") {
       for (let columnIndex = 0; columnIndex < 4; columnIndex++) {
         const updatedBoard = mergeUpperColumn(board, columnIndex, "upper");
@@ -185,22 +205,14 @@ const Home = () => {
     }
   };
 
-  let startX: 0;
-  let startY: 0;
-  const handleTouchStart = (event: any) => {
+  let startX: number = 0;
+  let startY: number = 0;
+  const handleTouchStart = (event: TouchEvent): void => {
     startX = event.touches[0].clientX;
     startY = event.touches[0].clientY;
   };
 
-  useEffect(() => {
-    window.addEventListener("keydown", handleKeyPress);
-    handleMove();
-    return () => {
-      window.removeEventListener("keydown", handleKeyPress);
-    };
-  }, [keyCode, direction]);
-
-  const handleTouchMove = (event: any) => {
+  const handleTouchMove = (event: TouchEvent): void => {
     event.preventDefault();
     const deltaX = event.touches[0].clientX - startX;
     const deltaY = event.touches[0].clientY - startY;
@@ -222,16 +234,21 @@ const Home = () => {
     }
   };
 
-  const handleTouchEnd = () => {
+  const handleTouchEnd = (): void => {
     setDirection("");
   };
 
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyPress);
+    handleMove();
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [keyCode, direction, board]); // Added `board` as a dependency
+
   return (
     <div style={{ margin: "0 auto", width: "400px", padding: "20px" }}>
-      <div className={styles.scoreContainer}>
-          <div className={styles.scoreLabel}>Score : </div>
-          <div className={styles.score}>{score}</div>
-        </div>
       <div className={styles.main}>
         <div
           className={styles.gameBoard}
@@ -295,22 +312,9 @@ const Home = () => {
             ▼
           </button>
         </div>
-
-        <button
-          className={styles.newGameBtn}
-          onClick={() => setBoard(initialBoard)}
-        >
-          New Game
-        </button>
-        <button
-          className={styles.resetBtn}
-          onClick={() => setBoard(initialBoard)}
-        >
-          Reset
-        </button>
       </div>
     </div>
   );
 };
 
-export default Home;
+export default Game6;
