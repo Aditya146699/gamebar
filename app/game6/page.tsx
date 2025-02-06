@@ -248,7 +248,7 @@ const Home = () => {
   }, [keyCode, direction, board]); // Added `board` as a dependency
 
   return (
-    <div style={{ margin: "0 auto", width: "400px", padding: "20px" }}>
+    <div style={{ margin: "0 auto", padding: "10px" }}>
       <div className={styles.main}>
         <div
           className={styles.gameBoard}
