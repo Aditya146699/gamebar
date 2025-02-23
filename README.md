@@ -22,11 +22,8 @@ Responsive Design: Enjoy the games on any device, whether it's a desktop, tablet
 Variety of Games: A selection of popular and classic games to keep you entertained.
 
 🚀 How to Play
-Visit the website: Game Rathod Fun
+Visit the website: Game Bar
 
 Choose the game you want to play from the main menu.
 
 Follow the on-screen instructions to start playing and have fun!
-
-💬 Feedback and Support
-If you have any feedback or encounter any issues, please feel free to contact us at your-email@example.com. We'd love to hear from you!
