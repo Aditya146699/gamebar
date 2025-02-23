@@ -18,6 +18,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Game Bar",
   description: "Variety of classic games like Tic-Tac-Toe, Memory Cards, Hangman, Rock Paper Scissors, Connect 4, and 2048",
+  icon: "/favicon.ico",
 };
 
 export default function RootLayout({
@@ -27,7 +28,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <link rel="icon" href="/favicon.ico" sizes="any" />
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
