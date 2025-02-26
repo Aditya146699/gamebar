@@ -44,6 +44,20 @@ Connect 4
 </div>
 </Link>
 
+<Link href="/game7">
+<div className="flex flex-col items-center p-2">
+<img src="game7.png" alt="" className="w-60 h-60"/>
+8 Puzzle 
+</div>
+</Link>
+
+<Link href="/game8">
+<div className="flex flex-col items-center p-2">
+<img src="game8.png" alt="" className="w-60 h-60"/>
+Queen Puzzle 
+</div>
+</Link>
+
    </div>
   );
 }
