@@ -108,7 +108,7 @@ const PuzzleBoard: React.FC = () => {
       <div
         key={index}
         className={`${styles.tile} ${value === 0 ? styles.empty : ''}`}
-        onClick={() => value !== 0 && handleTileClick(index)}
+        onClick={() => { if (value !== 0) handleTileClick(index); }}
       >
         {value !== 0 ? value : ''}
       </div>
