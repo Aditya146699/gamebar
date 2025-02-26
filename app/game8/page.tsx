@@ -1,168 +1,153 @@
 "use client";
-// pages/queen-puzzle.tsx
+import React, { useState, useEffect } from 'react';
+import styles from './PuzzleBoard.module.css';
 
-import React, { useState } from 'react';
+type PuzzleState = number[];
 
-interface QueenPuzzleProps {}
+const initialPuzzleState: PuzzleState = [1, 2, 3, 4, 5, 6, 7, 8, 0];
 
-const QueenPuzzle: React.FC<QueenPuzzleProps> = () => {
-  const [boardSize, setBoardSize] = useState(8);
-  const [queens, setQueens] = useState<number[]>(Array(boardSize).fill(-1));
-  const [solution, setSolution] = useState<number[][]>([]);
-  const [currentSolutionIndex, setCurrentSolutionIndex] = useState(0);
-  const [userQueens, setUserQueens] = useState<number[]>(Array(boardSize).fill(-1));
-  const [isUserPlaying, setIsUserPlaying] = useState(false);
-  const [isGameWon, setIsGameWon] = useState(false);
+const shufflePuzzle = (puzzle: PuzzleState): PuzzleState => {
+  let newPuzzle = [...puzzle];
+  for (let i = newPuzzle.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newPuzzle[i], newPuzzle[j]] = [newPuzzle[j], newPuzzle[i]];
+  }
+  return newPuzzle;
+};
 
-  const isSafe = (row: number, col: number, currentQueens: number[]): boolean => {
-    for (let i = 0; i < row; i++) {
-      if (currentQueens[i] === col ||
-        currentQueens[i] - i === col - row ||
-        currentQueens[i] + i === col + row) {
-        return false;
+const findEmptyTile = (puzzle: PuzzleState): number => {
+  return puzzle.indexOf(0);
+};
+
+const makeMove = (puzzle: PuzzleState, index: number): PuzzleState => {
+  const emptyIndex = findEmptyTile(puzzle);
+  const size = Math.sqrt(puzzle.length);
+  const row = Math.floor(index / size);
+  const col = index % size;
+  const emptyRow = Math.floor(emptyIndex / size);
+  const emptyCol = emptyIndex % size;
+
+  if (
+    (Math.abs(row - emptyRow) === 1 && col === emptyCol) ||
+    (Math.abs(col - emptyCol) === 1 && row === emptyRow)
+  ) {
+    const newPuzzle = [...puzzle];
+    [newPuzzle[index], newPuzzle[emptyIndex]] = [newPuzzle[emptyIndex], newPuzzle[index]];
+    return newPuzzle;
+  }
+  return puzzle;
+};
+
+const isWin = (puzzle: PuzzleState): boolean => {
+  for (let i = 0; i < puzzle.length - 1; i++) {
+    if (puzzle[i] !== i + 1) {
+      return false;
+    }
+  }
+  return puzzle[puzzle.length - 1] === 0;
+};
+
+const PuzzleBoard: React.FC = () => {
+  const [puzzleState, setPuzzleState] = useState<PuzzleState>(initialPuzzleState);
+  const [moves, setMoves] = useState<number>(0);
+  const [seconds, setSeconds] = useState<number>(0);
+  const [isTimerRunning, setIsTimerRunning] = useState<boolean>(false);
+  const [gameWon, setGameWon] = useState<boolean>(false);
+
+  useEffect(() => {
+    let timerInterval: NodeJS.Timeout | undefined;
+
+    if (isTimerRunning && !gameWon) {
+      timerInterval = setInterval(() => {
+        setSeconds((prev) => prev + 1);
+      }, 1000);
+    } else {
+      if (timerInterval) {
+        clearInterval(timerInterval);
       }
     }
-    return true;
-  };
 
-  const solveNQueens = (boardSize: number): number[][] => {
-    const solutions: number[][] = [];
-    const currentQueens: number[] = Array(boardSize).fill(-1);
-
-    const solve = (row: number) => {
-      if (row === boardSize) {
-        solutions.push([...currentQueens]);
-        return;
-      }
-
-      for (let col = 0; col < boardSize; col++) {
-        if (isSafe(row, col, currentQueens)) {
-          currentQueens[row] = col;
-          solve(row + 1);
-          currentQueens[row] = -1; // Backtrack
-        }
+    return () => {
+      if (timerInterval) {
+        clearInterval(timerInterval);
       }
     };
+  }, [isTimerRunning, gameWon]);
 
-    solve(0);
-    return solutions;
-  };
-
-  const handleSolve = () => {
-    const solutions = solveNQueens(boardSize);
-    setSolution(solutions);
-    if (solutions.length > 0) {
-      setQueens(solutions[0]);
-      setCurrentSolutionIndex(0);
-      setIsUserPlaying(false);
-      setIsGameWon(false);
-    } else {
-      setQueens(Array(boardSize).fill(-1));
-      alert('No solutions found.');
+  const handleTileClick = (index: number) => {
+    const newPuzzleState = makeMove(puzzleState, index);
+    if (newPuzzleState !== puzzleState) {
+      setPuzzleState(newPuzzleState);
+      setMoves((prev) => prev + 1);
     }
   };
 
-  const handleNextSolution = () => {
-    if (solution.length > 0) {
-      const nextIndex = (currentSolutionIndex + 1) % solution.length;
-      setCurrentSolutionIndex(nextIndex);
-      setQueens(solution[nextIndex]);
-    }
+  const handleShuffle = () => {
+    setPuzzleState(shufflePuzzle(initialPuzzleState));
+    setMoves(0);
+    setSeconds(0);
+    setIsTimerRunning(true);
+    setGameWon(false);
   };
 
-  const handlePreviousSolution = () => {
-    if (solution.length > 0) {
-      const prevIndex = (currentSolutionIndex - 1 + solution.length) % solution.length;
-      setCurrentSolutionIndex(prevIndex);
-      setQueens(solution[prevIndex]);
-    }
+  const handleReset = () => {
+    setPuzzleState(initialPuzzleState);
+    setMoves(0);
+    setSeconds(0);
+    setIsTimerRunning(false);
+    setGameWon(false);
   };
 
-  const handleUserPlay = () => {
-    setIsUserPlaying(true);
-    setUserQueens(Array(boardSize).fill(-1));
-    setIsGameWon(false);
+  const handleWin = () => {
+    setGameWon(true);
+    setIsTimerRunning(false);
   };
 
-  const handleCellClick = (row: number, col: number) => {
-    if (isUserPlaying) {
-      if (isSafe(row, col, userQueens)) {
-        const newUserQueens = [...userQueens];
-        newUserQueens[row] = col;
-        setUserQueens(newUserQueens);
-        if (row === boardSize - 1) {
-          if (JSON.stringify(newUserQueens) === JSON.stringify(queens)) {
-            setIsGameWon(true);
-            alert('You Win!');
-          } else {
-            alert('Incorrect Solution');
-          }
-          setIsUserPlaying(false);
-        }
-      } else {
-        alert('Invalid move!');
-      }
-    }
-  };
-
-  const renderBoard = (queensToRender: number[]) => {
+  const renderTile = (value: number, index: number) => {
     return (
-      <div style={{ display: 'grid', gridTemplateColumns: `repeat(${boardSize}, 50px)` }}>
-        {Array.from({ length: boardSize * boardSize }).map((_, index) => {
-          const row = Math.floor(index / boardSize);
-          const col = index % boardSize;
-          const isQueen = queensToRender[row] === col;
-          const isDark = (row + col) % 2 === 1;
-
-          return (
-            <div
-              key={index}
-              style={{
-                width: '50px',
-                height: '50px',
-                backgroundColor: isDark ? 'lightgray' : 'white',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                fontSize: '24px',
-                cursor: isUserPlaying ? 'pointer' : 'default',
-              }}
-              onClick={() => handleCellClick(row, col)}
-            >
-              {isQueen && '♛'}
-            </div>
-          );
-        })}
+      <div
+        key={index}
+        className={`${styles.tile} ${value === 0 ? styles.empty : ''}`}
+        onClick={() => value !== 0 && handleTileClick(index)}
+      >
+        {value !== 0 ? value : ''}
       </div>
     );
   };
 
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px' }}>
-      <h1>N-Queens Puzzle</h1>
-      <label>
-        Board Size:
-        <input
-          type="number"
-          value={boardSize}
-          onChange={(e) => setBoardSize(parseInt(e.target.value, 10))}
-          min="4"
-        />
-      </label>
-      <button onClick={handleSolve}>Solve</button>
-      <button onClick={handleUserPlay}>Play Yourself</button>
-      {solution.length > 1 && (
-        <div>
-          <button onClick={handlePreviousSolution}>Previous Solution</button>
-          <span>Solution {currentSolutionIndex + 1} of {solution.length}</span>
-          <button onClick={handleNextSolution}>Next Solution</button>
-        </div>
-      )}
+  useEffect(() => {
+    if (isWin(puzzleState)) {
+      handleWin();
+    }
+  }, [puzzleState]);
 
-      {isUserPlaying ? renderBoard(userQueens) : renderBoard(queens)}
-      {isGameWon && <p>You Won!</p>}
-    </div>
+  return (
+    <main className={styles.main}>
+      <div className={styles.puzzleContainer}>
+        <div className={styles.board}>
+          {puzzleState.map((value, index) => renderTile(value, index))}
+        </div>
+
+        <div className={styles.info}>
+          <p>Moves: {moves}</p>
+          <p>Time: {seconds}s</p>
+          {gameWon && <p>You win! 🎉</p>}
+        </div>
+
+        <div className={styles.controls}>
+          <button onClick={handleShuffle}>Start Game</button>
+          <button onClick={handleReset}>Reset</button>
+        </div>
+
+        {gameWon && (
+          <div className={styles.winScreen}>
+            <p>Congratulations! You solved the puzzle!</p>
+            <button onClick={handleReset}>Play Again</button>
+          </div>
+        )}
+      </div>
+    </main>
   );
 };
 
-export default QueenPuzzle;
+export default PuzzleBoard;
