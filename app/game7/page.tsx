@@ -1,14 +1,58 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { makeMove, isWin, shufflePuzzle, initialPuzzleState, PuzzleState } from './puzzleLogic';
-import styles from './PuzzleBoard.module.css'; // Import CSS module
+import styles from './PuzzleBoard.module.css';
+
+type PuzzleState = number[];
+
+const initialPuzzleState: PuzzleState = [1, 2, 3, 4, 5, 6, 7, 8, 0];
+
+const shufflePuzzle = (puzzle: PuzzleState): PuzzleState => {
+  let newPuzzle = [...puzzle];
+  for (let i = newPuzzle.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newPuzzle[i], newPuzzle[j]] = [newPuzzle[j], newPuzzle[i]];
+  }
+  return newPuzzle;
+};
+
+const findEmptyTile = (puzzle: PuzzleState): number => {
+  return puzzle.indexOf(0);
+};
+
+const makeMove = (puzzle: PuzzleState, index: number): PuzzleState => {
+  const emptyIndex = findEmptyTile(puzzle);
+  const size = Math.sqrt(puzzle.length);
+  const row = Math.floor(index / size);
+  const col = index % size;
+  const emptyRow = Math.floor(emptyIndex / size);
+  const emptyCol = emptyIndex % size;
+
+  if (
+    (Math.abs(row - emptyRow) === 1 && col === emptyCol) ||
+    (Math.abs(col - emptyCol) === 1 && row === emptyRow)
+  ) {
+    const newPuzzle = [...puzzle];
+    [newPuzzle[index], newPuzzle[emptyIndex]] = [newPuzzle[emptyIndex], newPuzzle[index]];
+    return newPuzzle;
+  }
+  return puzzle;
+};
+
+const isWin = (puzzle: PuzzleState): boolean => {
+  for (let i = 0; i < puzzle.length - 1; i++) {
+    if (puzzle[i] !== i + 1) {
+      return false;
+    }
+  }
+  return puzzle[puzzle.length - 1] === 0;
+};
 
 const PuzzleBoard: React.FC = () => {
   const [puzzleState, setPuzzleState] = useState<PuzzleState>(initialPuzzleState);
   const [moves, setMoves] = useState<number>(0);
   const [seconds, setSeconds] = useState<number>(0);
   const [isTimerRunning, setIsTimerRunning] = useState<boolean>(false);
-  const [gameWon, setGameWon] = useState<boolean>(false); // New state for game win
+  const [gameWon, setGameWon] = useState<boolean>(false);
 
   useEffect(() => {
     let timerInterval: NodeJS.Timeout | undefined;
@@ -18,7 +62,7 @@ const PuzzleBoard: React.FC = () => {
         setSeconds((prev) => prev + 1);
       }, 1000);
     } else {
-      clearInterval(timerInterval); // Corrected this line
+      clearInterval(timerInterval);
     }
 
     return () => clearInterval(timerInterval);
@@ -33,11 +77,11 @@ const PuzzleBoard: React.FC = () => {
   };
 
   const handleShuffle = () => {
-    setPuzzleState(shufflePuzzle(puzzleState));
+    setPuzzleState(shufflePuzzle(initialPuzzleState));
     setMoves(0);
     setSeconds(0);
     setIsTimerRunning(true);
-    setGameWon(false); // Reset game win state when shuffling
+    setGameWon(false);
   };
 
   const handleReset = () => {
@@ -45,12 +89,12 @@ const PuzzleBoard: React.FC = () => {
     setMoves(0);
     setSeconds(0);
     setIsTimerRunning(false);
-    setGameWon(false); // Reset game win state when resetting
+    setGameWon(false);
   };
 
   const handleWin = () => {
     setGameWon(true);
-    setIsTimerRunning(false); // Stop the timer when the game is won
+    setIsTimerRunning(false);
   };
 
   const renderTile = (value: number, index: number) => {
@@ -67,7 +111,7 @@ const PuzzleBoard: React.FC = () => {
 
   useEffect(() => {
     if (isWin(puzzleState)) {
-      handleWin(); // Handle win when puzzle is solved
+      handleWin();
     }
   }, [puzzleState]);
 
