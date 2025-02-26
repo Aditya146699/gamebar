@@ -62,10 +62,16 @@ const PuzzleBoard: React.FC = () => {
         setSeconds((prev) => prev + 1);
       }, 1000);
     } else {
-      clearInterval(timerInterval);
+      if (timerInterval) {
+        clearInterval(timerInterval);
+      }
     }
 
-    return () => clearInterval(timerInterval);
+    return () => {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+      }
+    };
   }, [isTimerRunning, gameWon]);
 
   const handleTileClick = (index: number) => {
