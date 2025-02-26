@@ -1,24 +1,24 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { makeMove, isWin, shufflePuzzle, initialPuzzleState, PuzzleState } from './puzzleLogic';
-import styles from './PuzzleBoard.module.css';  // Import CSS module
+import styles from './PuzzleBoard.module.css'; // Import CSS module
 
 const PuzzleBoard: React.FC = () => {
   const [puzzleState, setPuzzleState] = useState<PuzzleState>(initialPuzzleState);
   const [moves, setMoves] = useState<number>(0);
   const [seconds, setSeconds] = useState<number>(0);
   const [isTimerRunning, setIsTimerRunning] = useState<boolean>(false);
-  const [gameWon, setGameWon] = useState<boolean>(false);  // New state for game win
+  const [gameWon, setGameWon] = useState<boolean>(false); // New state for game win
 
   useEffect(() => {
-    let timerInterval: NodeJS.Timeout;
+    let timerInterval: NodeJS.Timeout | undefined;
 
     if (isTimerRunning && !gameWon) {
       timerInterval = setInterval(() => {
         setSeconds((prev) => prev + 1);
       }, 1000);
     } else {
-        () => clearInterval(timerInterval);
+      clearInterval(timerInterval); // Corrected this line
     }
 
     return () => clearInterval(timerInterval);
@@ -73,30 +73,30 @@ const PuzzleBoard: React.FC = () => {
 
   return (
     <main className={styles.main}>
-    <div className={styles.puzzleContainer}>
-      <div className={styles.board}>
-        {puzzleState.map((value, index) => renderTile(value, index))}
-      </div>
-
-      <div className={styles.info}>
-        <p>Moves: {moves}</p>
-        <p>Time: {seconds}s</p>
-        {gameWon && <p>You win! 🎉</p>}
-      </div>
-
-      <div className={styles.controls}>
-        <button onClick={handleShuffle}>Start Game</button>
-        <button onClick={handleReset}>Reset</button>
-      </div>
-
-      {gameWon && (
-        <div className={styles.winScreen}>
-          <p>Congratulations! You solved the puzzle!</p>
-          <button onClick={handleReset}>Play Again</button>
+      <div className={styles.puzzleContainer}>
+        <div className={styles.board}>
+          {puzzleState.map((value, index) => renderTile(value, index))}
         </div>
-      )}
-    </div>
-    </main>    
+
+        <div className={styles.info}>
+          <p>Moves: {moves}</p>
+          <p>Time: {seconds}s</p>
+          {gameWon && <p>You win! 🎉</p>}
+        </div>
+
+        <div className={styles.controls}>
+          <button onClick={handleShuffle}>Start Game</button>
+          <button onClick={handleReset}>Reset</button>
+        </div>
+
+        {gameWon && (
+          <div className={styles.winScreen}>
+            <p>Congratulations! You solved the puzzle!</p>
+            <button onClick={handleReset}>Play Again</button>
+          </div>
+        )}
+      </div>
+    </main>
   );
 };
 
