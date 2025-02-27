@@ -151,7 +151,6 @@ const PuzzleBoard: React.FC = () => {
 
         <div className={styles.controls}>
           <button onClick={handleShuffle}>Start Game</button>
-          {/* <button onClick={handleReset}>Reset</button> */}
         </div>
 
       </div>
