@@ -145,13 +145,13 @@ const PuzzleBoard: React.FC = () => {
         <div className={styles.info}>
           <p>Moves: {moves}</p>
           <p>Time: {seconds}s</p>
-          {gameWon && <p>You win! 🎉<button onClick={handleReset}>Play Again</button>          </p>
+          {gameWon && <p>You win! 🎉<button onClick={handleShuffle}>Play Again</button>          </p>
           }
         </div>
 
         <div className={styles.controls}>
           <button onClick={handleShuffle}>Start Game</button>
-          <button onClick={handleReset}>Reset</button>
+          {/* <button onClick={handleReset}>Reset</button> */}
         </div>
 
       </div>
