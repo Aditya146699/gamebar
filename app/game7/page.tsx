@@ -7,12 +7,26 @@ type PuzzleState = number[];
 const initialPuzzleState: PuzzleState = [1, 2, 3, 4, 5, 6, 7, 8, 0];
 
 const shufflePuzzle = (puzzle: PuzzleState): PuzzleState => {
-  const newPuzzle = [...puzzle];
-  for (let i = newPuzzle.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [newPuzzle[i], newPuzzle[j]] = [newPuzzle[j], newPuzzle[i]];
-  }
+  let newPuzzle = [...puzzle];
+  do {
+    for (let i = newPuzzle.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [newPuzzle[i], newPuzzle[j]] = [newPuzzle[j], newPuzzle[i]];
+    }
+  } while (!isSolvable(newPuzzle)); // Ensure the shuffled puzzle is solvable
   return newPuzzle;
+};
+
+const isSolvable = (puzzle: PuzzleState): boolean => {
+  let inversions = 0;
+  for (let i = 0; i < puzzle.length; i++) {
+    for (let j = i + 1; j < puzzle.length; j++) {
+      if (puzzle[i] && puzzle[j] && puzzle[i] > puzzle[j]) {
+        inversions++;
+      }
+    }
+  }
+  return inversions % 2 === 0;
 };
 
 const findEmptyTile = (puzzle: PuzzleState): number => {
