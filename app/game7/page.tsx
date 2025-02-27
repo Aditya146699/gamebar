@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 import React, { useState, useEffect } from 'react';
 import styles from './PuzzleBoard.module.css';
 
@@ -145,8 +145,7 @@ const PuzzleBoard: React.FC = () => {
         <div className={styles.info}>
           <p>Moves: {moves}</p>
           <p>Time: {seconds}s</p>
-          {gameWon && <p>You win! 🎉</p>
-            <button onClick={handleReset}>Play Again</button>
+          {gameWon && <p>You win! 🎉<button onClick={handleReset}>Play Again</button>          </p>
           }
         </div>
 
