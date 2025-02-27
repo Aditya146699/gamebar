@@ -1,4 +1,4 @@
-"use client";
+"use client"; 
 import React, { useState, useEffect } from 'react';
 import styles from './PuzzleBoard.module.css';
 
@@ -7,7 +7,7 @@ type PuzzleState = number[];
 const initialPuzzleState: PuzzleState = [1, 2, 3, 4, 5, 6, 7, 8, 0];
 
 const shufflePuzzle = (puzzle: PuzzleState): PuzzleState => {
-  let newPuzzle = [...puzzle];
+  const newPuzzle = [...puzzle]; // Changed 'let' to 'const'
   do {
     for (let i = newPuzzle.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
