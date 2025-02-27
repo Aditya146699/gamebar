@@ -13,7 +13,7 @@ const shufflePuzzle = (puzzle: PuzzleState): PuzzleState => {
       const j = Math.floor(Math.random() * (i + 1));
       [newPuzzle[i], newPuzzle[j]] = [newPuzzle[j], newPuzzle[i]];
     }
-  } while (!isSolvable(newPuzzle)); // Ensure the shuffled puzzle is solvable
+  } while (!isSolvable(newPuzzle));
   return newPuzzle;
 };
 
