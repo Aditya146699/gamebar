@@ -104,13 +104,7 @@ const PuzzleBoard: React.FC = () => {
     setGameWon(false);
   };
 
-  const handleReset = () => {
-    setPuzzleState(initialPuzzleState);
-    setMoves(0);
-    setSeconds(0);
-    setIsTimerRunning(false);
-    setGameWon(false);
-  };
+  // Removed handleReset since it was not used.
 
   const handleWin = () => {
     setGameWon(true);
