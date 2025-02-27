@@ -7,7 +7,7 @@ type PuzzleState = number[];
 const initialPuzzleState: PuzzleState = [1, 2, 3, 4, 5, 6, 7, 8, 0];
 
 const shufflePuzzle = (puzzle: PuzzleState): PuzzleState => {
-  const newPuzzle = [...puzzle]; // Changed 'let' to 'const'
+  let newPuzzle = [...puzzle];
   do {
     for (let i = newPuzzle.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -145,14 +145,12 @@ const PuzzleBoard: React.FC = () => {
         <div className={styles.info}>
           <p>Moves: {moves}</p>
           <p>Time: {seconds}s</p>
-          {gameWon && <p>You win! 🎉<button onClick={handleShuffle}>Play Again</button>          </p>
-          }
+          {gameWon && <p>You win! 🎉<button onClick={handleShuffle}>Play Again</button></p>}
         </div>
 
         <div className={styles.controls}>
           <button onClick={handleShuffle}>Start Game</button>
         </div>
-
       </div>
     </main>
   );
