@@ -145,7 +145,9 @@ const PuzzleBoard: React.FC = () => {
         <div className={styles.info}>
           <p>Moves: {moves}</p>
           <p>Time: {seconds}s</p>
-          {gameWon && <p>You win! 🎉</p>}
+          {gameWon && <p>You win! 🎉</p>
+            <button onClick={handleReset}>Play Again</button>
+          }
         </div>
 
         <div className={styles.controls}>
@@ -153,12 +155,6 @@ const PuzzleBoard: React.FC = () => {
           <button onClick={handleReset}>Reset</button>
         </div>
 
-        {gameWon && (
-          <div className={styles.winScreen}>
-            <p>Congratulations! You solved the puzzle!</p>
-            <button onClick={handleReset}>Play Again</button>
-          </div>
-        )}
       </div>
     </main>
   );
