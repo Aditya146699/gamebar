@@ -63,6 +63,7 @@ const QueenPuzzle: React.FC<QueenPuzzleProps> = () => {
                 width: '50px',
                 height: '50px',
                 backgroundColor: isDark ? 'gray' : 'white',
+                color: 'black',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
